@@ -12,9 +12,6 @@ import uz.vianet.dependencyinjection.activity.EditActivity
 import uz.vianet.dependencyinjection.activity.MainActivity
 import uz.vianet.dependencyinjection.databinding.ItemPostListBinding
 import uz.vianet.dependencyinjection.model.Post
-import uz.vianet.dependencyinjection.utils.Utils
-import uz.vianet.dependencyinjection.utils.Utils.toast
-import java.lang.String
 
 class PostAdapter(val activity: MainActivity, val items:ArrayList<Post>) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
@@ -35,7 +32,7 @@ class PostAdapter(val activity: MainActivity, val items:ArrayList<Post>) : Recyc
         holder.tv_body.setText(post.body)
 
         holder.tv_delete.setOnClickListener {
-            deletePostDialog(post)
+            activity.deletePostDialog(post)
         }
         holder.tv_edit.setOnClickListener {
             val intent = Intent(activity.baseContext, EditActivity::class.java)
@@ -75,22 +72,6 @@ class PostAdapter(val activity: MainActivity, val items:ArrayList<Post>) : Recyc
         }
     }
 
-    private fun deletePostDialog(post: Post) {
-        val title = "Delete"
-        val body = "Do you want to delete?"
-        Utils.customDialog(activity, title, body, object : Utils.DialogListener {
-            override fun onPositiveClick() {
-                activity.viewModel.apiPostDelete(post)
-                activity.viewModel.deletedPost.observe(activity) {
-                    activity.viewModel.apiPostList()
-                    activity.toast(activity,"${post.title} deleted.")
 
-                }
-
-            }
-
-            override fun onNegativeClick() {}
-        })
-    }
 
 }

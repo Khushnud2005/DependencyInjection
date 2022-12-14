@@ -1,5 +1,6 @@
 package uz.vianet.dependencyinjection.view_model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,7 @@ class MainViewModel @Inject constructor(val postService: PostService) : ViewMode
 
     fun apiPostDelete(post: Post){
         launch(Dispatchers.Main + handler) {
+            Log.d("Delete Post","Post - ${post.id} come to viewModel")
             var delPost = deletePost(post)
             deletedPost.value = delPost
         }
@@ -48,7 +50,9 @@ class MainViewModel @Inject constructor(val postService: PostService) : ViewMode
     private suspend fun deletePost(post: Post): Post {
         return async(Dispatchers.IO) {
             val response = postService.deletePost(post.id).execute()
+            Log.d("Delete Post","Post - ${post.id} deleted")
             return@async response.body()!!
+
         }.await()
     }
 

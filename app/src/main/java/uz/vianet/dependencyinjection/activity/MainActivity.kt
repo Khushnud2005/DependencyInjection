@@ -3,6 +3,7 @@ package uz.vianet.dependencyinjection.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uz.vianet.dependencyinjection.adapter.PostAdapter
 import uz.vianet.dependencyinjection.databinding.ActivityMainBinding
 import uz.vianet.dependencyinjection.model.Post
+import uz.vianet.dependencyinjection.utils.Utils
 import uz.vianet.dependencyinjection.utils.Utils.toast
 import uz.vianet.dependencyinjection.view_model.MainViewModel
 
@@ -69,6 +71,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this@MainActivity, "Operation canceled", Toast.LENGTH_LONG).show()
         }
+    }
+    fun deletePostDialog(post: Post) {
+        val title = "Delete"
+        val body = "Do you want to delete?"
+        Utils.customDialog(this@MainActivity, title, body, object : Utils.DialogListener {
+            override fun onPositiveClick() {
+                Log.d("Delete Post","Post - ${post.id} sent to delete")
+                viewModel.apiPostDelete(post)
+                viewModel.deletedPost.observe(this@MainActivity) {
+                    viewModel.apiPostList()
+
+
+                }
+                toast(this@MainActivity,"${post.title} deleted.")
+            }
+
+            override fun onNegativeClick() {}
+        })
     }
     override fun onDestroy() {
         super.onDestroy()
